@@ -43,7 +43,7 @@ def Crack(file_path):
                 shutil.copyfile(pdf_path, out)
             doc.close()
         except:
-            # print('解密失败')
+            print('解密失败')
             if not os.path.exists(os.path.join(file_path, '未处理完成')):
                 os.makedirs(os.path.join(file_path, '未处理完成'))
             shutil.copyfile(pdf_path, fail_path)

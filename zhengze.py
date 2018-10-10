@@ -102,9 +102,9 @@ def validateTitle(title):
 def image_extract(path):
     keywords = "........"
     for file in os.listdir(path):
-     try:
+     # try:
         if file[-4:] == ".pdf":
-            mkpath = 'E:\\项目\\试运行\\201808\\提取图片\\'
+            mkpath = path+'\\提取图片\\'
             mkpath = mkpath + file[:-4] + '\\'
             mkdir(mkpath)
             doc = fitz.open(os.path.join(path, file))
@@ -202,11 +202,11 @@ def image_extract(path):
                                 picname_num = picname_num + 1
             doc.close()
             shutil.copy(os.path.join(path, file), os.path.join(mkpath, file))
-     except:
-        print(file)
-        mkdir(path+'\\未处理完成')
-        shutil.move(mkpath, path+'\\未处理完成')
-        continue
+     # except:
+     #    print(file)
+     #    mkdir(path+'\\未处理完成')
+     #    shutil.move(mkpath, path+'\\未处理完成')
+     #    continue
 
 
-image_extract("E:\\项目\\试运行\\201808\\有目录")
+image_extract("E:\\项目\\试运行\\201808\\需求1\\有问题")

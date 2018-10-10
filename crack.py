@@ -27,7 +27,7 @@ def Crack(file_path):
     pdf_files = [name for name in os.listdir(file_path) if name.endswith('.pdf')]
     for pdf in pdf_files:
         pdf_path=os.path.join(file_path,pdf)
-        fail_path=os.path.join(out_path,'fail',pdf)
+        fail_path=os.path.join(file_path,'未处理完成',pdf)
         out=os.path.join(out_path,pdf)
         try:
             # "报告吧"水印一般为第一个obj

@@ -21,19 +21,50 @@ def mkdir(path):
     # 存在     True
     # 不存在   False
     isExists = os.path.exists(path)
-
     # 判断结果
     if not isExists:
         # 如果不存在则创建目录
-        # print(path+' 创建成功')
         # 创建目录操作函数
         os.makedirs(path)
         return True
     else:
-        # 如果目录存在则不创建，并提示目录已存在
-        # print(path+' 目录已存在')
+        # 如果目录存在则不创建
         return False
 
+# 对文件进行预处理，分成资料来源，数据来源，来源三种情况
+def preprocess(path):
+    '''
+    在截取图片之前对数据进行预处理
+    :param path:文件路径
+    :return:分类后的文件夹
+    '''
+    materialsource = []
+    datasource = []
+    source = []
+    mkpath1 = path + "/资料来源"
+    mkpath2 = path + "/数据来源"
+    mkpath3 = path + "/来源"
+    pathdir = {"资料来源：":mkpath1, "数据来源：":mkpath2, "来源：":mkpath3}
+    mkdir(mkpath1)
+    mkdir(mkpath2)
+    mkdir(mkpath3)
+    for file in os.listdir(path):
+        if file[-4:] == '.pdf':
+            doc = fitz.open(os.path.join(path, file))
+            page_count = doc.pageCount
+            for i in range(1, page_count):
+                page = doc.loadPage(i)
+                materialsource = materialsource.extend(page.searchFor("资料来源："))
+                datasource = materialsource.extend(page.searchFor("数据来源："))
+                source = materialsource.extend(page.searchFor("来源："))
+            doc.close()
+        if len(materialsource) != 0 and len(datasource) == 0:
+            shutil.copy(os.path.join(path, file), os.path.join(mkpath1, file))
+        if len(materialsource) == 0 and len(datasource) != 0:
+            shutil.copy(os.path.join(path, file), os.path.join(mkpath2, file))
+        if len(materialsource) == 0 and len(datasource) == 0 and len(source) != 0:
+            shutil.copy(os.path.join(path, file), os.path.join(mkpath3, file))
+    return pathdir    
 
 # 处理截取的重复数据
 def deal_repeat(list):
@@ -115,7 +146,7 @@ def image_extract(path):
                 page = doc.loadPage(i)
                 page_text = page.getText()
                 if keywords in page_text:
-                    pattern = re.compile(r'图表 [0-9][^\.]*')
+                    pattern = re.compile(r'图表 [0-9][^\...]*')
                     picname_list1 = pattern.findall(page_text)
                     picname_list.extend(picname_list1)
             # 处理具体每一页的图表
